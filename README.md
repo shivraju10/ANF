@@ -347,7 +347,6 @@ Creates new `SFTP_Monitor.exe` in `dist\` folder.
 ## 📦 Distribution
 
 **Give to users:** Just the `dist` folder
-**Keep for updates:** Entire `D:\VS_Code` folder
 **No setup needed:** Users just double-click the .exe
 
 ---
