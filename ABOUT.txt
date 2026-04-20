@@ -1,0 +1,273 @@
+================================================================================
+                      SFTP MONITOR SERVICE - VERSION 2.0
+================================================================================
+
+DESCRIPTION:
+-----------
+Automated SFTP file monitoring service that downloads files from remote SFTP
+servers to local directories at regular intervals. Designed for Abercrombie &
+Fitch LAX operations to automatically sync XML and Excel files without manual
+intervention.
+
+
+KEY FEATURES:
+============
+
+🔒 SECURE CREDENTIALS WITH ENCRYPTION
+  • Passwords encrypted using Fernet symmetric encryption
+  • Machine-specific encryption key (based on computer name + username)
+  • Configuration stored in external JSON file
+  • No rebuilding required to change settings
+
+📊 AUTOMATIC FILE VERSIONING
+  • Detects file versions by timestamp pattern
+  • Example: China_Hang_Tag_131260041_04-18-2026_04-36-13.xls
+  • Automatically moves old versions to OldVer\ subdirectory
+  • Downloads latest version to main folder
+  • Works for both .xls and .xml files
+
+🗂️ OLD VERSION AUTO-CLEANUP (30 DAYS)
+  • Automatically deletes files older than 30 days from OldVer\ folders
+  • Prevents disk space issues from accumulating old files
+  • Configurable retention period
+  • Can be enabled/disabled in config
+
+📊 DAILY SUMMARY REPORTS
+  • Generates comprehensive daily reports
+  • Saved to reports\ folder with date stamp
+  • Includes:
+    - Total files downloaded and failed
+    - Success rate percentage
+    - Error logs
+    - Disk space status for all monitored folders
+  • Automatic generation at midnight
+  • Final summary on service shutdown
+
+🔌 CONNECTION KEEP-ALIVE
+  • Maintains persistent SFTP connection between monitoring cycles
+  • Automatic reconnection if connection drops
+  • Reduces overhead from repeated connections
+  • 30-second keep-alive interval (configurable)
+
+⏱️ CONNECTION TIMEOUT MANAGEMENT
+  • Configurable connection timeout (default: 30 seconds)
+  • Prevents hanging on network issues
+  • Banner timeout for SSH handshake
+  • Graceful handling of connection failures
+
+📝 LOG ROTATION
+  • Automatic log file rotation
+  • Maximum 10MB per log file
+  • Keeps 5 backup files
+  • Prevents unlimited log growth
+  • Older logs automatically archived
+
+💾 DISK SPACE MONITORING
+  • Checks available disk space before downloading
+  • Configurable minimum free space (default: 5GB)
+  • Warnings logged when space is low
+  • Skips downloads if insufficient space
+  • Daily summary includes disk space status
+
+⚡ SMART FILE HANDLING
+  • Non-versioned files get unique timestamp if duplicate
+  • Automatic local directory creation
+  • Remote file deletion after successful download
+  • Download statistics tracking
+
+🔄 SCHEDULED MONITORING
+  • Configurable check interval (default: 1 minute)
+  • Runs continuously as background process
+  • Multiple folder pairs supported
+  • Non-recursive folder scanning (files only)
+
+
+CONFIGURATION:
+=============
+
+CONFIG FILE: config.json (auto-generated on first run)
+
+Structure:
+{
+  "sftp": {
+    "host": "sftp.natcoglobal.com",
+    "port": 222,
+    "username": "AbercrombieLAX",
+    "password_encrypted": "[AUTO-ENCRYPTED]",
+    "connection_timeout": 30,
+    "keepalive_interval": 30
+  },
+  "folders": {
+    "ScriptTest/XML FILES": "C:\\A&F\\XML FILES",
+    "ScriptTest/EXCEL FILES": "C:\\A&F\\EXCEL FILES"
+  },
+  "monitoring": {
+    "interval_minutes": 1,
+    "min_disk_space_gb": 5
+  },
+  "maintenance": {
+    "old_version_retention_days": 30,
+    "cleanup_enabled": true,
+    "daily_summary_enabled": true
+  },
+  "logging": {
+    "max_log_size_mb": 10,
+    "backup_count": 5
+  }
+}
+
+
+FOLDER STRUCTURE:
+================
+
+Production (dist\):
+  SFTP_Monitor.exe        - Main executable (includes all dependencies)
+  config.json             - Configuration file (auto-created)
+  sftp_monitor.log        - Current log file
+  sftp_monitor.log.1      - Rotated log backup
+  ...
+  reports\                - Daily summary reports
+    2026-04-19_summary.txt
+    2026-04-20_summary.txt
+
+Monitored Folders:
+  C:\A&F\XML FILES\       - Downloaded XML files
+    OldVer\               - Old versions (auto-cleaned after 30 days)
+  C:\A&F\EXCEL FILES\     - Downloaded Excel files
+    OldVer\               - Old versions (auto-cleaned after 30 days)
+
+
+USAGE:
+=====
+
+FIRST TIME SETUP:
+1. Copy dist\SFTP_Monitor.exe to target location
+2. Double-click SFTP_Monitor.exe
+3. config.json will be auto-created with default settings
+4. Minimize window (keep running)
+
+TO CHANGE SETTINGS:
+1. Stop the service (Ctrl+C or close window)
+2. Edit config.json with desired settings
+3. Restart SFTP_Monitor.exe
+4. NO REBUILDING REQUIRED!
+
+TO VIEW LOGS:
+• Real-time: Check console window
+• Historical: Open sftp_monitor.log (and .log.1, .log.2, etc.)
+• Daily summaries: Check reports\ folder
+
+TO STOP SERVICE:
+• Close the window, or
+• Press Ctrl+C in the console
+
+
+TECHNICAL SPECIFICATIONS:
+========================
+
+Platform:           Windows 7/8/10/11 (64-bit)
+Runtime:            Standalone (no Python installation required)
+Executable Size:    ~14MB (includes Python + all dependencies)
+Dependencies:       paramiko, schedule, cryptography (bundled)
+Connection:         SSH/SFTP over port 222
+Log Format:         Text with timestamps
+Config Format:      JSON with encrypted credentials
+Encryption:         Fernet (AES-128 CBC)
+
+
+MONITORING BEHAVIOR:
+===================
+
+• Checks remote folders every 1 minute (configurable)
+• Downloads all files found
+• Deletes from remote after successful download
+• Moves old versions to OldVer\ subdirectory
+• Logs all operations
+• Tracks daily statistics
+• Generates summary reports
+• Auto-cleanup old files after 30 days
+
+
+ERROR HANDLING:
+==============
+
+• Connection failures: Automatic retry on next cycle
+• Low disk space: Skip downloads, log warning
+• Download failures: Logged, tracked in daily stats
+• Configuration errors: Fall back to defaults
+• All errors captured in daily summary report
+
+
+DAILY SUMMARY EXAMPLE:
+=====================
+
+======================================================================
+SFTP Monitor Daily Summary - 2026-04-20
+======================================================================
+
+Files Downloaded: 47
+Files Failed: 2
+Folders Checked: 48
+Success Rate: 95.92%
+
+Errors (2): 
+======================================================================
+1. Download failed: ScriptTest/XML FILES/corrupted.xml - Connection timeout
+2. Low disk space: 3.24GB
+
+Disk Space Status:
+======================================================================
+C:\A&F\XML FILES:
+  Free: 48.52GB / 500.00GB (9.7% free)
+C:\A&F\EXCEL FILES:
+  Free: 48.52GB / 500.00GB (9.7% free)
+
+======================================================================
+Report generated at: 2026-04-21 00:01:15
+
+
+SUPPORT & MAINTENANCE:
+=====================
+
+For issues or questions:
+• Check sftp_monitor.log for error details
+• Review daily summary reports
+• Verify config.json settings
+• Check disk space availability
+
+To update the application:
+• Rebuild from source using build_executable.bat
+• Replace SFTP_Monitor.exe in dist\ folder
+• config.json and logs are preserved
+
+
+VERSION HISTORY:
+===============
+
+v2.0 (2026-04-20)
+  • Added encrypted credential storage
+  • Implemented log rotation (10MB, 5 backups)
+  • Added connection timeout and keep-alive
+  • Disk space monitoring with configurable threshold
+  • Auto-cleanup of old versions (30-day retention)
+  • Daily summary report generation
+  • External JSON configuration
+  • Enhanced error tracking and reporting
+
+v1.0 (Initial Release)
+  • Basic SFTP file monitoring
+  • Automatic file versioning
+  • Old version archival to OldVer\ folders
+  • PyInstaller standalone executable
+
+
+LICENSE & COPYRIGHT:
+===================
+
+Developed for: Abercrombie & Fitch - LAX Operations
+Purpose:       Automated SFTP file synchronization
+Status:        Internal Use Only
+
+================================================================================
+                        END OF DOCUMENTATION
+================================================================================

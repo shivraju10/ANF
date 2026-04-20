@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# PyInstaller
+build/
+
+# Logs
+*.log
+*.log.*
+
+# Config (generated at runtime)
+config.json
+
+# Reports (generated at runtime)
+reports/
+
+# Test files
+test_*.py
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Distribution (keep dist folder structure but ignore contents except exe)
+dist/*.log
+dist/*.log.*
+dist/config.json
+dist/reports/
+dist/__pycache__/
