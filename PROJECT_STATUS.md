@@ -9,8 +9,8 @@
 ## 📊 Repository Overview
 
 ```
-Commits:  4
-Branches: 2 (master, develop)
+Commits:  5
+Branches: 1 (master only)
 Tags:     1 (v2.0)
 Remote:   ✅ GitHub - https://github.com/shivraju10/ANF
 Files:    16 tracked
@@ -22,14 +22,13 @@ Lines:    2,965+ lines of code and documentation
 ## 🌳 Git Structure
 
 ```
-master (production)
+master
   │
+  ├─ c931a70  Update: Mark cloud backup as complete
+  ├─ 07fbce1  Add comprehensive project status and roadmap
   ├─ 94ada0c  Add GitHub/GitLab cloud backup setup and branching strategy
   ├─ 5f0da80  Add Git commands reference guide [v2.0 ★]
   └─ da7f605  Initial commit: SFTP Monitor v2.0 - Complete implementation
-  
-develop (development)
-  └─ (synced with master)
 ```
 
 ---
@@ -93,44 +92,24 @@ develop (development)
 
 ## 🚀 Next Steps
 
-### 1. Link to GitHub/GitLab for Cloud Backup
+### 1. Daily Git Workflow (Simplified)
 
-**Quick Start:**
+**Making changes:**
 ```bash
-# Run automated setup
-.\setup_github.bat
-
-# Or manual setup
-git remote add origin https://github.com/USERNAME/SFTP-Monitor.git
-git push -u origin master
-git push origin develop
-git push --tags
+# After editing files
+git add .
+git commit -m "Description of changes"
+git push
 ```
 
-**See:** [GITHUB_SETUP.md](GITHUB_SETUP.md) for detailed instructions
+**See:** [GIT_COMMANDS.md](GIT_COMMANDS.md) for more commands
 
-### 2. Start Using Branching Workflow
-
-**For new features:**
-```bash
-git checkout develop
-git checkout -b feature/feature-name
-# ... make changes ...
-git commit -m "Add feature"
-git checkout develop
-git merge feature/feature-name
-```
-
-**See:** [BRANCHING_STRATEGY.md](BRANCHING_STRATEGY.md) for complete workflow
-
-### 3. Create Future Releases
+### 2. Create Future Releases
 
 **When ready for v2.1:**
 ```bash
-git checkout master
-git merge develop
-git tag -a v2.1 -m "Version 2.1 description"
-git push --all
+git tag -a v2.1 -m "Version 2.1 - New features description"
+git push
 git push --tags
 ```
 
@@ -258,8 +237,8 @@ git push --tags
 
 ## 🎯 Current Objectives
 
-1. **Immediate:** Link to GitHub for cloud backup (use `setup_github.bat`)
-2. **Short-term:** Start using develop branch for any changes
+1. **Immediate:** Start building/testing the application
+2. **Short-term:** Deploy to production and monitor
 3. **Mid-term:** Implement features from roadmap
 4. **Long-term:** Create v2.1 release with new features
 
@@ -268,11 +247,10 @@ git push --tags
 ## 💡 Tips for Success
 
 ✅ **Commit often** - Small, logical commits are better  
-✅ **Use branches** - Keep master clean, work on develop/feature branches  
-✅ **Tag releases** - Every production release gets a tag  
+✅ **Tag releases** - Every production release gets a tag (v2.0, v2.1, etc.)  
 ✅ **Push regularly** - Backup to cloud frequently  
 ✅ **Document changes** - Update README when adding features  
-✅ **Test before merge** - Always test before merging to master  
+✅ **Test before commit** - Always test before committing to master  
 
 ---
 
